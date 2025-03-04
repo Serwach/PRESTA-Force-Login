@@ -1,0 +1,3 @@
+#header .menu, #header .menu>ul>li {
+    display: none !important;
+}

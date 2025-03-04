@@ -30,7 +30,9 @@ class ForceLogin extends Module
 
     public function install(): bool
     {
-        return parent::install() && $this->registerHook('actionDispatcher');
+        return parent::install()
+            && $this->registerHook('actionDispatcher')
+            && $this->registerHook('displayHeader');
     }
 
     /**
@@ -49,10 +51,17 @@ class ForceLogin extends Module
         }
     }
 
-    /**
-     * @param string $controller
-     * @return bool
-     */
+    public function hookDisplayHeader(): void
+    {
+        if (Dispatcher::getInstance()->getController() === 'authentication') {
+            $this->context->controller->registerStylesheet(
+                'forcelogin-css',
+                $this->_path . 'views/css/forcelogin.css',
+                ['media' => 'all', 'priority' => 1]
+            );
+        }
+    }
+
     private function isAllowedController(string $controller): bool
     {
         return in_array(strtolower($controller), $this->allowedControllers, true);
